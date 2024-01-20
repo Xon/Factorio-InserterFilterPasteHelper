@@ -1,0 +1,11 @@
+{
+    "name": "inserter_filter_paste_helper",
+    "version": "0.0.1",
+    "title": "Cyclic ingredients inserter filter helper",
+    "author": "Xon1",
+    "contact": "",
+    "homepage": "",
+    "factorio_version": "1.1",
+    "dependencies": ["base >= 1.1", "(?) space-exploration", "(?) aai-containers", "(?) FilterInsertersBegone", "AdditionalPasteSettings"],
+    "description": "Cyclic recipies (ie output one or more ingredients) make the stock pasting settings onto a filtered inserter behavior less than ideal"
+}
