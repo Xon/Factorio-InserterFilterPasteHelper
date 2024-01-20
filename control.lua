@@ -29,6 +29,15 @@ script.on_event(defines.events.on_entity_settings_pasted, function(event)
             local applyWhiteList = filterWhiteListTargets[dropTargetType] ~= nil
 
             if applyBlackList or applyWhiteList then
+                -- special case dropping into a non requester/buffer container as these are likely outputs not inputs
+                if (dropTargetType == "logistic-container") then
+                    local logisticsMode = dropTarget.prototype.logistic_mode 
+                    if (logisticsMode ~= "requester" and logisticsMode ~= "buffer") then
+                        applyBlackList = false
+                        applyWhiteList = true
+                    end
+                end
+                
                 local recipe = machine.get_recipe()
                 local products = recipe.products
                 local ingredients = recipe.ingredients
