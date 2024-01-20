@@ -31,13 +31,20 @@ script.on_event(defines.events.on_entity_settings_pasted, function(event)
             if applyBlackList or applyWhiteList then
                 -- special case dropping into a non requester/buffer container as these are likely outputs not inputs
                 if (dropTargetType == "logistic-container") then
-                    local logisticsMode = dropTarget.prototype.logistic_mode 
+                    local ctrl = inserter.get_or_create_control_behavior()
+                    local c1 = ctrl.get_circuit_network(defines.wire_type.red)
+                    local c2 = ctrl.get_circuit_network(defines.wire_type.green)
+                    if (ctrl ~= nil and c1 == nil and c1 == nil) then
+                        ctrl.connect_to_logistic_network = false
+                    end
+
+                    local logisticsMode = dropTarget.prototype.logistic_mode
                     if (logisticsMode ~= "requester" and logisticsMode ~= "buffer") then
                         applyBlackList = false
                         applyWhiteList = true
                     end
                 end
-                
+
                 local recipe = machine.get_recipe()
                 local products = recipe.products
                 local ingredients = recipe.ingredients
