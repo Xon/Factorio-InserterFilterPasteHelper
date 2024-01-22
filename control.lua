@@ -1,9 +1,9 @@
-local filterBlackListTargets = {
+local filterForInput = {
     ["container"] = true,
     ["logistic-container"] = true,
 }
 
-local filterWhiteListTargets = {
+local filterForOutput = {
     ["transport-belt"] = true,
     ["splitter"] = true,
     ["underground-belt"] = true,
@@ -25,10 +25,10 @@ script.on_event(defines.events.on_entity_settings_pasted, function(event)
         local dropTarget = inserter.drop_target
         if (dropTarget ~= nill) then
             local dropTargetType = dropTarget.type
-            local applyBlackList = filterBlackListTargets[dropTargetType] ~= nil
-            local applyWhiteList = filterWhiteListTargets[dropTargetType] ~= nil
+            local applyFilterForInput = filterForInput[dropTargetType] ~= nil
+            local applyFilterForOutput = filterForOutput[dropTargetType] ~= nil
 
-            if applyBlackList or applyWhiteList then
+            if applyFilterForInput or applyFilterForOutput then
                 -- special case dropping into a non requester/buffer container as these are likely outputs not inputs
                 if (dropTargetType == "logistic-container") then
                     local ctrl = inserter.get_or_create_control_behavior()
@@ -37,11 +37,10 @@ script.on_event(defines.events.on_entity_settings_pasted, function(event)
                     if (ctrl ~= nil and c1 == nil and c1 == nil) then
                         ctrl.connect_to_logistic_network = false
                     end
-
                     local logisticsMode = dropTarget.prototype.logistic_mode
-                    if (logisticsMode ~= "requester" and logisticsMode ~= "buffer") then
-                        applyBlackList = false
-                        applyWhiteList = true
+                    if ((logisticsMode ~= "requester") and (logisticsMode ~= "buffer")) then
+                        applyFilterForOutput = true
+                        applyFilterForInput = false
                     end
                 end
 
@@ -64,7 +63,7 @@ script.on_event(defines.events.on_entity_settings_pasted, function(event)
                 end
 
                 if (hasCyclicIngredients) then
-                    if applyWhiteList then
+                    if applyFilterForInput then
                         inserter.inserter_filter_mode = "whitelist"
                         for item_name, _ in pairs(cyclicIngredients) do
                             if (x < num_slots) then
